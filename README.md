@@ -14,8 +14,8 @@ Discussion forum thread
 ```
 sudo apt-get install git
 sudo git clone https://github.com/UAVmatrix/UAVcast.git
-cd UAVcast/Install
-sudo ./Install.sh
+cd UAVcast/install
+sudo ./install.sh
 ```
 
 ##How it works
@@ -36,8 +36,9 @@ This file conatins the configuration parameters for UAVcast scripts. Simply set 
 #                                                 UAVcast for Drones                                              #
 #  This script package will start various programs defined in this config file to simplify the startup proccess.  #
 #  Create by Bernt Christian Egeland. Further information can be found at                                         #             
-#  http://uavmatrix.com/viewpost/5/110/741/0/Raspberry-Pi/Ready-made-UAVcast-image-for-RPI2                       #
+#  http://uavmatrix.com/d/5110-UAVcast-Casting-software-for-Raspberry-PI-Supports-3G-4G-WiFi                      #
 ###################################################################################################################
+ 
  
 #All parameters are Case Sensistive. Please type carefully.
 #Do not comment out any paramters, as they are essential for the UAVcast proccess. Just change the parameter with the option value.
@@ -45,11 +46,11 @@ This file conatins the configuration parameters for UAVcast scripts. Simply set 
 #FlightController type. Arguments; Navio, APM(Any Ardupilot boards such as APM2,x  Pixhawk)
 Cntrl="Navio"
  
-#Use udp_redirect(TTL to Ethernet converter)?. #Options; Yes, No
-udp_redirect="No"
- 
+#Set your telemetry connection. Options:: (gpio, ttl)  // gpio = pin 8_tx & 10_rx. ttl = ttl_Ethernet converter.
+Telemetry_Type="gpio"
+
 #GCS_adress; Set your DynDns or IP of Ground Control Station.
-GCS_adress="10.0.0.211"
+GCS_address="10.0.0.212"
  
 #Ground Control Station Telemetry Port APM or Navio should start streaming to.
 #NOTE! You need to open this port on your GCS network.

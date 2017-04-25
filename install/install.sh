@@ -1,4 +1,5 @@
 #!/bin/bash 
+. config.sh
 # Create a log file of the build as well as displaying the build on the tty as it runs
 exec > >(tee build_UAV.log)
 exec 2>&1
@@ -39,13 +40,21 @@ cp $FILE /lib/systemd/system/
 sudo systemctl daemon-reload
 #sudo systemctl enable $FILE
 
+#Get Pitype
+get_pi_type
+#If RPI 3, we need to remap the UART pins
+set_dtoverlay_pi_three
+#set config for cmdline.txt and config.txt
+do_serial
+
+
 #Navio Options
 Navio=$1
 echo Installing UAVcast $Navio
 ################# COMPILE UAV software ############
  
  
-# Update and Upgrade the Pi, otherwise the build may fail due to inconsistencies
+# # Update and Upgrade the Pi, otherwise the build may fail due to inconsistencies
  
 sudo apt-get update -y --force-yes
 
@@ -74,7 +83,7 @@ cd packages
 
 	git clone https://github.com/UAVmatrix/libubox.git libubox
 	git clone git://nbd.name/uqmi.git
-
+  git clone https://github.com/UAVmatrix/ser2net.git
 
 wget  https://s3.amazonaws.com/json-c_releases/releases/json-c-0.12.tar.gz
 tar -xvf json-c-0.12.tar.gz
@@ -97,4 +106,11 @@ cd ..
 cd uqmi
 sudo cmake CMakeLists.txt
 sudo make install
+cd ..
 
+cd ser2net
+sudo autoreconf -f -i
+sudo ./configure && make
+sudo make install
+sudo make clean
+cd ..

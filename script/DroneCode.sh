@@ -3,7 +3,7 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source $DIR/../DroneConfig.cfg
 function DroneInit {
 case $GSM_Connect in
-	"Ethernet")
+	"other")
 	 ip="$(ifconfig | grep -A 1 'eth0' | tail -1 | cut -d ':' -f 2 | cut -d ' ' -f 1)"
 	 echo "Ethernet ip is $ip"
 	 StartBroadcast
@@ -37,7 +37,7 @@ ping -q -w 1 -c 1 `ip r | grep default | cut -d ' ' -f 3` > /dev/null && echo Se
 				 fi
 			case $Cntrl in
 				"APM")
-			       	udp_redirect
+			       	Telemetry_Type
 					gstreamer
 			    ;;
 			    "Navio")
@@ -48,11 +48,11 @@ ping -q -w 1 -c 1 `ip r | grep default | cut -d ' ' -f 3` > /dev/null && echo Se
 	
  }
 
-function udp_redirect {
-if [ $udp_redirect == "Yes" ]; then
+function Telemetry_Type {
+if [ $Telemetry_Type == "ttl" ]; then
 pidof udp_redirect >/dev/null
     	if [[ $? -ne 0 ]] ; then  
-			sudo $DIR/./udp-send.sh > $DIR/../log/udp_redirect.log 2>&1 & 
+			sudo $DIR/./udp-send.sh > $DIR/../log/Telemetry_Type.log 2>&1 & 
 			sleep 0.3
 			pidof udp_redirect >/dev/null
 			sleep 0.3
@@ -66,7 +66,25 @@ pidof udp_redirect >/dev/null
 		else
 	    echo "Another udp_redirect process already running"
         fi
+elif [ $Telemetry_Type == "gpio" ]; then
+		pidof ser2net >/dev/null
+    	if [[ $? -ne 0 ]] ; then  
+			sudo $DIR/./ser2net.sh > $DIR/../log/Telemetry_Type.log 2>&1 & 
+			sleep 0.3
+			pidof ser2net >/dev/null
+			sleep 0.3
+				if [[ $? -eq 0 ]] ; then 
+					echo 'ser2net script started'
+					return 1
+					else
+					echo 'Another ser2net process already running'
+				fi
+				return 0
+		else
+	    echo "Another ser2net process already running"
+       fi
 fi
+
 }
 function gstreamer {
 if [ $UseCam == "Yes" ]; then

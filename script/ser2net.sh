@@ -7,5 +7,9 @@ if [[ $GCS_address =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]];
   else
   ip=`dig +short $GCS_address`
 fi
-echo Ground Control IP adress: $ip
-sudo $DIR/./udp_redirect 0.0.0.0 14550 $ip 14550 &
+FILE="$DIR/./ser2net.conf"
+/bin/cat <<EOM >$FILE
+udp,$PORT:raw:300:/dev/ttyAMA0:57600 remaddr=ipv4,udp,$ip,$PORT
+EOM
+sleep 1.5
+sudo ser2net -c $DIR/./ser2net.conf > $DIR/../log/ser2net.log 2>&1 &

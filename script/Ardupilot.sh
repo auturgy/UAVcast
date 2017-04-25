@@ -1,13 +1,13 @@
 #!/bin/bash
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source $DIR/../DroneConfig.cfg
-if [[ $GCS_adress =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]];
+if [[ $GCS_address =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]];
  then
-    ip=$GCS_adress
+    ip=$GCS_address
   else
-  ip=`dig +short $GCS_adress`
+  ip=`dig +short $GCS_address`
 fi
-echo $GCS_adress
+echo $GCS_address
 echo APM starting:: stream adress: $ip
 if [ $secondary_tele == "Yes" ]; then
 echo Using Secondary telemetry $sec_ip_address : $sec_port
